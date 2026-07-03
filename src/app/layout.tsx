@@ -3,6 +3,8 @@ import { Inter, Outfit } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
+import { WhatsAppFloat } from "@/components/layout/WhatsAppFloat";
+import { prisma } from "@/lib/prisma";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -19,11 +21,18 @@ export const metadata: Metadata = {
   description: "B2B supplier and manufacturer of MS, GI, PTFE, brass, high-tensile, ASTM-grade, titanium, and precision fasteners.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  let settings = null;
+  try {
+    settings = await prisma.siteSettings.findUnique({ where: { id: "global" } });
+  } catch {
+    // DB not synced or error
+  }
+
   return (
     <html lang="en">
       <body
@@ -34,6 +43,7 @@ export default function RootLayout({
           {children}
         </main>
         <Footer />
+        <WhatsAppFloat phoneNumber={settings?.primaryPhone || ""} />
       </body>
     </html>
   );

@@ -40,3 +40,13 @@ model Product {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
+
+model SiteSettings {
+  id              String   @id @default("global")
+  primaryEmail    String?
+  primaryPhone    String?
+  addressText     String?
+  googleMapsEmbed String?
+  contactCards    String?  // Will store JSON string array of { heading: string, email: string, phone: string }
+  updatedAt       DateTime @updatedAt
+}

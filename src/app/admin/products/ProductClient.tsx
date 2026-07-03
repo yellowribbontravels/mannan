@@ -6,7 +6,7 @@ import { Plus, Trash2 } from "lucide-react";
 import Link from "next/link";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function ProductClient({ initialProducts, categories }: { initialProducts: any[], categories: any[] }) {
+export function ProductClient({ initialProducts }: { initialProducts: any[] }) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [products, setProducts] = useState<any[]>(initialProducts);
 
@@ -49,7 +49,7 @@ export function ProductClient({ initialProducts, categories }: { initialProducts
               </tr>
             ) : products.map(product => {
               let productSizes = [];
-              try { productSizes = product.sizes ? JSON.parse(product.sizes) : []; } catch(e) {}
+              try { productSizes = product.sizes ? JSON.parse(product.sizes) : []; } catch { /* ignore */ }
               
               return (
                 <tr key={product.id} className="border-b border-border/50 hover:bg-muted/50 transition">

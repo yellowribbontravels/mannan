@@ -26,17 +26,11 @@ export default async function AdminProducts() {
     }
   }));
 
-  const safeCategories = categories.map(c => ({
-    ...c,
-    createdAt: c.createdAt.toISOString(),
-    updatedAt: c.updatedAt.toISOString(),
-  }));
-
   return (
     <div>
       <h1 className="text-3xl font-extrabold text-foreground mb-8">Manage Products</h1>
       <Suspense fallback={<div>Loading products...</div>}>
-        <ProductClient initialProducts={safeProducts} categories={safeCategories} />
+        <ProductClient initialProducts={safeProducts} />
       </Suspense>
     </div>
   );

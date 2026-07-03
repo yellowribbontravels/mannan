@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { Package, ArrowLeft, CheckCircle2 } from "lucide-react";
+import { Package, ArrowLeft } from "lucide-react";
 
 export const dynamic = 'force-dynamic';
 
@@ -21,9 +21,9 @@ export default async function ProductDetails({ params }: { params: Promise<{ id:
   let images = [];
   let specs = {};
   let sizes = [];
-  try { images = product.images ? JSON.parse(product.images) : []; } catch(e) {}
-  try { specs = product.specs ? JSON.parse(product.specs) : {}; } catch(e) {}
-  try { sizes = product.sizes ? JSON.parse(product.sizes) : []; } catch(e) {}
+  try { images = product.images ? JSON.parse(product.images) : []; } catch { /* ignore */ }
+  try { specs = product.specs ? JSON.parse(product.specs) : {}; } catch { /* ignore */ }
+  try { sizes = product.sizes ? JSON.parse(product.sizes) : []; } catch { /* ignore */ }
 
   return (
     <div className="relative min-h-screen pb-24 z-10 flex flex-col">

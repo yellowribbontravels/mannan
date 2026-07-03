@@ -1,6 +1,28 @@
-import { MapPin, Phone, Mail, Clock } from "lucide-react";
+import { MapPin, Phone, Mail, Contact2 } from "lucide-react";
+import { prisma } from "@/lib/prisma";
 
-export default function Contact() {
+export const dynamic = 'force-dynamic';
+
+export default async function Contact() {
+  let settings = null;
+  try {
+    settings = await prisma.siteSettings.findUnique({ where: { id: "global" } });
+  } catch {
+    // DB not synced or error
+  }
+
+  const primaryPhone = settings?.primaryPhone || "09652039721";
+  const primaryEmail = settings?.primaryEmail || "info@mmannan.co.in";
+  const addressText = settings?.addressText || "4-2-271, Mahankali St,\nOld Bhoiguda, Ranigunj,\nSecunderabad, Telangana 500003";
+  const googleMapsEmbed = settings?.googleMapsEmbed;
+
+  let contactCards = [];
+  try {
+    contactCards = settings?.contactCards ? JSON.parse(settings.contactCards) : [];
+  } catch {
+    contactCards = [];
+  }
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-10">
       <div className="text-center mb-16 relative">
@@ -12,6 +34,12 @@ export default function Contact() {
           Partner with M. Mannan & Co. for reliable, compliant, and precision-engineered industrial components. Our team is ready to support your sourcing requirements.
         </p>
       </div>
+
+      {googleMapsEmbed && (
+        <div className="mb-16 w-full h-[400px] rounded-3xl overflow-hidden shadow-[0_0_40px_rgba(0,0,0,0.3)] border border-white/10 glass">
+          <div dangerouslySetInnerHTML={{ __html: googleMapsEmbed }} className="w-full h-full [&>iframe]:w-full [&>iframe]:h-full [&>iframe]:border-0" />
+        </div>
+      )}
 
       <div className="grid md:grid-cols-2 gap-12 lg:gap-16">
         {/* Contact Information */}
@@ -26,10 +54,8 @@ export default function Contact() {
                 </div>
                 <div>
                   <h3 className="font-display font-bold text-xl text-white">Corporate Office</h3>
-                  <p className="text-muted-foreground leading-relaxed mt-2">
-                    4-2-271, Mahankali St,<br />
-                    Old Bhoiguda, Ranigunj,<br />
-                    Secunderabad, Telangana 500003
+                  <p className="text-muted-foreground leading-relaxed mt-2 whitespace-pre-line">
+                    {addressText}
                   </p>
                 </div>
               </div>
@@ -39,8 +65,8 @@ export default function Contact() {
                   <Phone className="w-6 h-6 text-accent" />
                 </div>
                 <div>
-                  <h3 className="font-display font-bold text-xl text-white">Phone</h3>
-                  <p className="text-muted-foreground mt-2">09652039721</p>
+                  <h3 className="font-display font-bold text-xl text-white">Primary Phone</h3>
+                  <p className="text-muted-foreground mt-2">{primaryPhone}</p>
                 </div>
               </div>
 
@@ -50,21 +76,23 @@ export default function Contact() {
                 </div>
                 <div>
                   <h3 className="font-display font-bold text-xl text-white">Email</h3>
-                  <p className="text-muted-foreground mt-2">info@mmannan.co.in</p>
-                  <p className="text-muted-foreground">sales@mmannan.co.in</p>
+                  <p className="text-muted-foreground mt-2">{primaryEmail}</p>
                 </div>
               </div>
 
-              <div className="flex items-start gap-5">
-                <div className="bg-primary/20 p-4 rounded-2xl shrink-0 shadow-[0_0_20px_rgba(99,49,168,0.2)]">
-                  <Clock className="w-6 h-6 text-accent" />
+              {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+              {contactCards.map((card: any, index: number) => (
+                <div key={index} className="flex items-start gap-5">
+                  <div className="bg-primary/20 p-4 rounded-2xl shrink-0 shadow-[0_0_20px_rgba(99,49,168,0.2)]">
+                    <Contact2 className="w-6 h-6 text-accent" />
+                  </div>
+                  <div>
+                    <h3 className="font-display font-bold text-xl text-white">{card.heading}</h3>
+                    {card.phone && <p className="text-muted-foreground mt-2">{card.phone}</p>}
+                    {card.email && <p className="text-muted-foreground">{card.email}</p>}
+                  </div>
                 </div>
-                <div>
-                  <h3 className="font-display font-bold text-xl text-white">Business Hours</h3>
-                  <p className="text-muted-foreground mt-2">Monday - Saturday</p>
-                  <p className="text-muted-foreground">9:00 AM - 6:00 PM (IST)</p>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
         </div>

@@ -1,7 +1,7 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { LayoutDashboard, Folder, Package, Wrench } from "lucide-react";
+import { LayoutDashboard, Folder, Package, Wrench, Settings } from "lucide-react";
 import { SignOutButton } from "./SignOutButton";
 
 export default async function AdminLayout({
@@ -39,6 +39,11 @@ export default async function AdminLayout({
             <Link href="/admin/products/new" className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-primary hover:text-primary-foreground transition-colors pl-8 text-sm">
               <span className="w-1.5 h-1.5 rounded-full bg-accent"></span> Add Product
             </Link>
+            <div className="pt-4 border-t border-border/20 mt-4">
+              <Link href="/admin/settings" className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-primary hover:text-primary-foreground transition-colors">
+                <Settings className="w-5 h-5" /> Settings
+              </Link>
+            </div>
           </nav>
         </div>
         <div className="p-4 border-t border-border/20">

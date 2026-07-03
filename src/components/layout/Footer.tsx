@@ -1,7 +1,19 @@
 import Link from "next/link";
 import { Wrench, Mail, Phone, MapPin } from "lucide-react";
+import { prisma } from "@/lib/prisma";
 
-export function Footer() {
+export async function Footer() {
+  let settings = null;
+  try {
+    settings = await prisma.siteSettings.findUnique({ where: { id: "global" } });
+  } catch {
+    // Fallback if db error
+  }
+
+  const primaryPhone = settings?.primaryPhone || "09652039721";
+  const primaryEmail = settings?.primaryEmail || "info@mmannan.co.in";
+  const addressText = settings?.addressText || "4-2-271, Mahankali St,\nOld Bhoiguda, Ranigunj,\nSecunderabad, Telangana 500003";
+
   return (
     <footer className="relative bg-background pt-20 pb-10 border-t border-white/10 overflow-hidden">
       <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1532453288672-3a27e9be9efd?auto=format&fit=crop&q=80')] bg-cover bg-center opacity-[0.02] mix-blend-overlay pointer-events-none" />
@@ -33,15 +45,15 @@ export function Footer() {
             <ul className="space-y-4">
               <li className="flex items-start gap-3 text-muted-foreground">
                 <MapPin className="h-5 w-5 text-accent shrink-0 mt-1" />
-                <span>4-2-271, Mahankali St,<br />Old Bhoiguda, Ranigunj,<br />Secunderabad, Telangana 500003</span>
+                <span className="whitespace-pre-line">{addressText}</span>
               </li>
               <li className="flex items-center gap-3 text-muted-foreground">
                 <Phone className="h-5 w-5 text-accent shrink-0" />
-                <span>09652039721</span>
+                <span>{primaryPhone}</span>
               </li>
               <li className="flex items-center gap-3 text-muted-foreground">
                 <Mail className="h-5 w-5 text-accent shrink-0" />
-                <span>info@mmannan.co.in</span>
+                <span>{primaryEmail}</span>
               </li>
             </ul>
           </div>
