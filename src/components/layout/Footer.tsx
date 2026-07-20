@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Wrench, Mail, Phone, MapPin } from "lucide-react";
+import { Mail, Phone, MapPin } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 
 export async function Footer() {
@@ -20,9 +20,9 @@ export async function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
           <div className="col-span-1 md:col-span-2">
-            <div className="flex items-center gap-2 mb-6">
-              <Wrench className="h-6 w-6 text-accent drop-shadow-md" />
-              <span className="text-2xl font-display font-bold tracking-tight text-white">M. Mannan <span className="text-gradient">& Co.</span></span>
+            <div className="flex items-center gap-3 mb-6">
+              <img src="/logo.webp" alt="M Mannan Pvt Ltd Logo" className="h-16 w-auto object-contain" />
+              <span className="text-2xl font-display font-bold tracking-tight text-white hidden sm:inline-block">M Mannan <span className="text-gradient">Pvt Ltd</span></span>
             </div>
             <p className="text-muted-foreground mb-6 max-w-sm leading-relaxed">
               Over 25 years of combined experience in the fastener and industrial components sector. A trading-led model focused on reliability, compliance, and repeat institutional demand.

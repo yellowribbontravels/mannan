@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { deleteProduct } from "./actions";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, Edit } from "lucide-react";
 import Link from "next/link";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -64,6 +64,9 @@ export function ProductClient({ initialProducts }: { initialProducts: any[] }) {
                     </div>
                   </td>
                   <td className="p-4 text-right">
+                    <Link href={`/admin/products/${product.id}/edit`} className="inline-block text-blue-500 hover:text-blue-600 transition p-2 rounded hover:bg-blue-500/10 mr-2" title="Edit">
+                      <Edit className="w-4 h-4" />
+                    </Link>
                     <button onClick={() => handleDelete(product.id)} className="text-red-500 hover:text-red-600 transition p-2 rounded hover:bg-red-500/10" title="Delete">
                       <Trash2 className="w-4 h-4" />
                     </button>

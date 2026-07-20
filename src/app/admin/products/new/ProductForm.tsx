@@ -2,24 +2,37 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { createProduct } from "../actions";
+import { createProduct, updateProduct } from "../actions";
 import { Plus, X, Upload, Loader2 } from "lucide-react";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function ProductForm({ categories }: { categories: any[] }) {
+export function ProductForm({ categories, initialData }: { categories: any[], initialData?: any }) {
   const router = useRouter();
   
   const [isUploading, setIsUploading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [slug, setSlug] = useState("");
-  const [categoryId, setCategoryId] = useState(categories[0]?.id || "");
-  const [image, setImage] = useState("");
+  const [name, setName] = useState(initialData?.name || "");
+  const [description, setDescription] = useState(initialData?.description || "");
+  const [slug, setSlug] = useState(initialData?.slug || "");
+  const [categoryId, setCategoryId] = useState(initialData?.categoryId || categories[0]?.id || "");
   
-  const [specs, setSpecs] = useState<{key: string, value: string}[]>([]);
-  const [sizes, setSizes] = useState<string[]>([]);
+  let initialImage = "";
+  try { if (initialData?.images) { const imgs = JSON.parse(initialData.images); if (imgs.length > 0) initialImage = imgs[0]; } } catch {}
+  const [image, setImage] = useState(initialImage);
+  
+  let initialSpecs = [];
+  try { 
+    if (initialData?.specs) { 
+      const sp = JSON.parse(initialData.specs);
+      initialSpecs = Object.entries(sp).map(([key, value]) => ({ key, value: value as string }));
+    } 
+  } catch {}
+  const [specs, setSpecs] = useState<{key: string, value: string}[]>(initialSpecs);
+  
+  let initialSizes = [];
+  try { if (initialData?.sizes) { initialSizes = JSON.parse(initialData.sizes); } } catch {}
+  const [sizes, setSizes] = useState<string[]>(initialSizes);
   const [newSize, setNewSize] = useState("");
   
   const [error, setError] = useState("");
@@ -88,7 +101,7 @@ export function ProductForm({ categories }: { categories: any[] }) {
     const sizesString = JSON.stringify(sizes);
     const imagesString = image ? JSON.stringify([image]) : "[]";
 
-    const res = await createProduct({
+    const payload = {
       name,
       description,
       slug: slug || name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
@@ -96,7 +109,14 @@ export function ProductForm({ categories }: { categories: any[] }) {
       specs: specsString,
       sizes: sizesString,
       images: imagesString
-    });
+    };
+
+    let res;
+    if (initialData?.id) {
+      res = await updateProduct(initialData.id, payload);
+    } else {
+      res = await createProduct(payload);
+    }
 
     if (res.success) {
       router.push("/admin/products");

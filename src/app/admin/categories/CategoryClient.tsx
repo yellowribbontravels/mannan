@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { deleteCategory } from "./actions";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, Edit } from "lucide-react";
 import Link from "next/link";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -53,6 +53,9 @@ export function CategoryClient({ initialCategories }: { initialCategories: any[]
                 <td className="p-4 text-muted-foreground">{category.slug}</td>
                 <td className="p-4">{category._count?.products || 0}</td>
                 <td className="p-4 text-right">
+                  <Link href={`/admin/categories/${category.id}/edit`} className="inline-block text-blue-500 hover:text-blue-600 transition p-2 rounded hover:bg-blue-500/10 mr-2" title="Edit">
+                    <Edit className="w-4 h-4" />
+                  </Link>
                   <button onClick={() => handleDelete(category.id)} className="text-red-500 hover:text-red-600 transition p-2 rounded hover:bg-red-500/10" title="Delete">
                     <Trash2 className="w-4 h-4" />
                   </button>

@@ -26,3 +26,16 @@ export async function deleteCategory(id: string) {
     return { success: false, message: err?.message || "Failed to delete category (it may contain products)" };
   }
 }
+
+export async function updateCategory(id: string, data: { name: string, description?: string, slug: string, image?: string }) {
+  try {
+    const cat = await prisma.category.update({ where: { id }, data });
+    revalidatePath("/admin/categories");
+    revalidatePath("/categories");
+    revalidatePath(`/categories/${cat.slug}`);
+    return { success: true, category: cat };
+  } catch (error: unknown) {
+    const err = error as Error;
+    return { success: false, message: err?.message || "Failed to update category" };
+  }
+}

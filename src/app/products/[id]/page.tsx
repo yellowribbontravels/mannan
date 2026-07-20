@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Package, ArrowLeft } from "lucide-react";
+import { ImageWithFallback } from "@/components/ui/ImageWithFallback";
 
 export const dynamic = 'force-dynamic';
 
@@ -39,8 +40,13 @@ export default async function ProductDetails({ params }: { params: Promise<{ id:
           <div className="space-y-6">
             <div className="aspect-square glass rounded-3xl flex items-center justify-center overflow-hidden border border-white/10 relative shadow-[0_0_40px_rgba(0,0,0,0.3)]">
               {images.length > 0 ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={images[0]} alt={product.name} className="object-cover w-full h-full absolute inset-0 hover:scale-110 transition-transform duration-700" />
+                <ImageWithFallback 
+                  src={images[0]} 
+                  alt={product.name} 
+                  className="object-cover w-full h-full absolute inset-0 hover:scale-110 transition-transform duration-700" 
+                  fallbackType="package"
+                  fallbackClassName="w-24 h-24 text-white/10"
+                />
               ) : (
                 <Package className="w-24 h-24 text-white/10" />
               )}
@@ -49,8 +55,13 @@ export default async function ProductDetails({ params }: { params: Promise<{ id:
               <div className="grid grid-cols-4 gap-4">
                 {images.slice(1).map((img: string, idx: number) => (
                   <div key={idx} className="aspect-square glass rounded-xl overflow-hidden border border-white/10 relative hover:border-accent/50 transition-colors cursor-pointer group">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={img} alt={`${product.name} ${idx + 2}`} className="object-cover w-full h-full absolute inset-0 group-hover:scale-110 transition-transform duration-500" />
+                    <ImageWithFallback 
+                      src={img} 
+                      alt={`${product.name} ${idx + 2}`} 
+                      className="object-cover w-full h-full absolute inset-0 group-hover:scale-110 transition-transform duration-500" 
+                      fallbackType="package"
+                      fallbackClassName="w-8 h-8 text-white/10 absolute inset-0 m-auto"
+                    />
                   </div>
                 ))}
               </div>

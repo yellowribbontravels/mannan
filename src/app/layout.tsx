@@ -17,7 +17,7 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
-  title: "M. Mannan & Co. | Industrial Fasteners",
+  title: "M Mannan Pvt Ltd | Industrial Fasteners",
   description: "B2B supplier and manufacturer of MS, GI, PTFE, brass, high-tensile, ASTM-grade, titanium, and precision fasteners.",
 };
 

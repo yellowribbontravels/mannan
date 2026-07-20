@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Package, ArrowLeft, Folder } from "lucide-react";
+import { ImageWithFallback } from "@/components/ui/ImageWithFallback";
 
 export const dynamic = 'force-dynamic';
 
@@ -27,10 +28,16 @@ export default async function CategoryProducts({ params }: { params: Promise<{ i
       </Link>
 
       <div className="flex flex-col md:flex-row gap-8 items-start mb-12 bg-secondary text-secondary-foreground p-8 rounded-xl border-l-4 border-accent">
-        {category.image ? (
-           // eslint-disable-next-line @next/next/no-img-element
-          <img src={category.image} alt={category.name} className="w-32 h-32 object-cover rounded-lg shadow-md shrink-0 bg-background" />
-        ) : (
+        {category.image && (
+          <ImageWithFallback 
+            src={category.image} 
+            alt={category.name} 
+            className="w-32 h-32 object-cover rounded-lg shadow-md shrink-0 bg-background" 
+            fallbackType="folder"
+            fallbackClassName="w-16 h-16 text-primary opacity-50"
+          />
+        )}
+        {!category.image && (
           <div className="w-32 h-32 bg-background rounded-lg shadow-md shrink-0 flex items-center justify-center">
              <Folder className="w-16 h-16 text-primary opacity-50" />
           </div>
@@ -57,12 +64,18 @@ export default async function CategoryProducts({ params }: { params: Promise<{ i
               href={`/products/${product.id}`}
               className="group flex flex-col bg-background border border-border rounded-lg overflow-hidden hover:border-accent hover:shadow-lg transition h-full"
             >
-              <div className="aspect-video bg-muted flex items-center justify-center p-6 relative">
-                {product.images && JSON.parse(product.images).length > 0 ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={JSON.parse(product.images)[0]} alt={product.name} className="object-cover w-full h-full absolute inset-0" />
-                ) : (
-                  <Package className="w-12 h-12 text-primary opacity-20 group-hover:opacity-40 group-hover:scale-110 transition" />
+              <div className="aspect-square bg-muted flex items-center justify-center p-6 relative shrink-0">
+                {product.images && JSON.parse(product.images).length > 0 && (
+                  <ImageWithFallback 
+                    src={JSON.parse(product.images)[0]} 
+                    alt={product.name} 
+                    className="object-cover w-full h-full absolute inset-0 z-10" 
+                    fallbackType="package"
+                    fallbackClassName="w-12 h-12 text-primary opacity-20 group-hover:opacity-40 group-hover:scale-110 transition relative z-20"
+                  />
+                )}
+                {(!product.images || JSON.parse(product.images).length === 0) && (
+                  <Package className="w-12 h-12 text-primary opacity-20 group-hover:opacity-40 group-hover:scale-110 transition relative z-20" />
                 )}
               </div>
               <div className="p-6 flex-grow flex flex-col justify-between">

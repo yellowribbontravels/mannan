@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { Package } from "lucide-react";
+import { ImageWithFallback } from "@/components/ui/ImageWithFallback";
 
 export const dynamic = 'force-dynamic';
 
@@ -36,15 +37,21 @@ export default async function Products() {
             <Link 
               key={product.id} 
               href={`/products/${product.id}`}
-              className="glass-card flex flex-col rounded-2xl overflow-hidden group h-full block"
+              className="glass-card flex flex-col rounded-2xl overflow-hidden group h-full"
             >
-              <div className="aspect-video bg-white/5 flex items-center justify-center p-6 relative overflow-hidden">
+              <div className="aspect-square bg-white/5 flex items-center justify-center p-6 relative overflow-hidden shrink-0">
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                {product.images && JSON.parse(product.images).length > 0 ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={JSON.parse(product.images)[0]} alt={product.name} className="object-cover w-full h-full absolute inset-0 group-hover:scale-110 transition-transform duration-700" />
-                ) : (
-                  <Package className="w-16 h-16 text-primary opacity-30 group-hover:opacity-60 group-hover:scale-110 transition-all duration-500" />
+                {product.images && JSON.parse(product.images).length > 0 && (
+                  <ImageWithFallback 
+                    src={JSON.parse(product.images)[0]} 
+                    alt={product.name} 
+                    className="object-cover w-full h-full absolute inset-0 group-hover:scale-110 transition-transform duration-700 z-10" 
+                    fallbackType="package"
+                    fallbackClassName="w-16 h-16 text-primary opacity-30 group-hover:opacity-60 group-hover:scale-110 transition-all duration-500 relative z-20"
+                  />
+                )}
+                {(!product.images || JSON.parse(product.images).length === 0) && (
+                  <Package className="w-16 h-16 text-primary opacity-30 group-hover:opacity-60 group-hover:scale-110 transition-all duration-500 relative z-20" />
                 )}
                 <div className="absolute top-3 right-3 bg-accent/90 backdrop-blur-md text-accent-foreground text-xs font-bold px-3 py-1.5 rounded-full z-20 shadow-md">
                   {product.category.name}

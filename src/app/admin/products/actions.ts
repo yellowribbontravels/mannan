@@ -31,3 +31,17 @@ export async function deleteProduct(id: string) {
     return { success: false, message: err?.message || "Failed to delete product" };
   }
 }
+
+export async function updateProduct(id: string, data: { name: string, description: string, slug: string, categoryId: string, specs: string, sizes: string, images: string }) {
+  try {
+    const product = await prisma.product.update({ where: { id }, data });
+    revalidatePath("/admin/products");
+    revalidatePath("/products");
+    revalidatePath(`/products/${product.slug}`);
+    revalidatePath(`/categories/${data.categoryId}`);
+    return { success: true, product };
+  } catch (error: unknown) {
+    const err = error as Error;
+    return { success: false, message: err?.message || "Failed to update product" };
+  }
+}

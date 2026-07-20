@@ -2,15 +2,20 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { createCategory } from "../actions";
+import { createCategory, updateCategory } from "../actions";
 import { Upload, Loader2 } from "lucide-react";
 
-export function CategoryForm() {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function CategoryForm({ initialData }: { initialData?: any }) {
   const router = useRouter();
-  const [formData, setFormData] = useState({ name: "", description: "", slug: "", image: "" });
-  const [error, setError] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  const [name, setName] = useState(initialData?.name || "");
+  const [description, setDescription] = useState(initialData?.description || "");
+  const [slug, setSlug] = useState(initialData?.slug || "");
+  const [image, setImage] = useState(initialData?.image || "");
+  const [error, setError] = useState("");
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -19,20 +24,20 @@ export function CategoryForm() {
     setIsUploading(true);
     setError("");
     
-    const data = new FormData();
-    data.append('file', file);
+    const formData = new FormData();
+    formData.append('file', file);
 
     try {
       const res = await fetch('/api/upload', {
         method: 'POST',
-        body: data
+        body: formData
       });
-      const resData = await res.json();
+      const data = await res.json();
       
-      if (resData.success) {
-        setFormData({...formData, image: resData.url});
+      if (data.success) {
+        setImage(data.url);
       } else {
-        setError(resData.error || "Failed to upload image");
+        setError(data.error || "Failed to upload image");
       }
     } catch {
       setError("An error occurred during upload");
@@ -46,12 +51,19 @@ export function CategoryForm() {
     setError("");
     setIsSubmitting(true);
     
-    const res = await createCategory({
-      name: formData.name,
-      description: formData.description,
-      slug: formData.slug || formData.name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
-      image: formData.image
-    });
+    const payload = {
+      name,
+      description,
+      slug: slug || name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+      image
+    };
+
+    let res;
+    if (initialData?.id) {
+      res = await updateCategory(initialData.id, payload);
+    } else {
+      res = await createCategory(payload);
+    }
 
     if (res.success) {
       router.push("/admin/categories");
@@ -68,16 +80,16 @@ export function CategoryForm() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label className="block text-sm font-medium mb-2">Name *</label>
-            <input required type="text" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full px-4 py-2.5 rounded-md border border-border bg-background focus:ring-2 focus:ring-primary focus:outline-none" />
+            <input required type="text" value={name} onChange={e => setName(e.target.value)} className="w-full px-4 py-2.5 rounded-md border border-border bg-background focus:ring-2 focus:ring-primary focus:outline-none" />
           </div>
           <div>
             <label className="block text-sm font-medium mb-2">Slug (optional)</label>
-            <input type="text" value={formData.slug} onChange={e => setFormData({...formData, slug: e.target.value})} className="w-full px-4 py-2.5 rounded-md border border-border bg-background focus:ring-2 focus:ring-primary focus:outline-none" placeholder="auto-generated if empty" />
+            <input type="text" value={slug} onChange={e => setSlug(e.target.value)} className="w-full px-4 py-2.5 rounded-md border border-border bg-background focus:ring-2 focus:ring-primary focus:outline-none" placeholder="auto-generated if empty" />
           </div>
         </div>
         <div>
           <label className="block text-sm font-medium mb-2">Description</label>
-          <textarea value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} className="w-full px-4 py-2.5 rounded-md border border-border bg-background focus:ring-2 focus:ring-primary focus:outline-none" rows={4}></textarea>
+          <textarea value={description} onChange={e => setDescription(e.target.value)} className="w-full px-4 py-2.5 rounded-md border border-border bg-background focus:ring-2 focus:ring-primary focus:outline-none" rows={4}></textarea>
         </div>
         
         <div className="border-t border-border pt-6 mt-6">
@@ -90,7 +102,7 @@ export function CategoryForm() {
                 <span className="text-sm font-medium">{isUploading ? 'Uploading...' : 'Upload Image'}</span>
               </div>
             </div>
-            {formData.image && (
+            {image && (
               <div className="flex items-center gap-2 text-sm text-green-600 bg-green-50 px-3 py-1.5 rounded-full border border-green-200">
                 Image Uploaded Successfully
               </div>

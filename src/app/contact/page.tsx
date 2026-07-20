@@ -31,7 +31,7 @@ export default async function Contact() {
           <span className="text-gradient">Contact</span> Us
         </h1>
         <p className="text-lg text-muted-foreground max-w-2xl mx-auto relative z-10">
-          Partner with M. Mannan & Co. for reliable, compliant, and precision-engineered industrial components. Our team is ready to support your sourcing requirements.
+          Partner with M Mannan Pvt Ltd for reliable, compliant, and precision-engineered industrial components. Our team is ready to support your sourcing requirements.
         </p>
       </div>
 

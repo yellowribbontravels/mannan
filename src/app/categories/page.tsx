@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { Folder } from "lucide-react";
+import { ImageWithFallback } from "@/components/ui/ImageWithFallback";
 
 export const dynamic = 'force-dynamic';
 
@@ -36,20 +37,28 @@ export default async function Categories() {
             <Link 
               key={category.id} 
               href={`/categories/${category.id}`}
-              className="glass-card rounded-2xl overflow-hidden group block"
+              className="glass-card flex flex-col rounded-2xl overflow-hidden group h-full"
             >
-              <div className="aspect-video bg-white/5 flex items-center justify-center p-6 relative overflow-hidden">
+              <div className="aspect-square bg-white/5 flex items-center justify-center p-6 relative overflow-hidden shrink-0">
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                {category.image ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={category.image} alt={category.name} className="object-cover w-full h-full absolute inset-0 group-hover:scale-110 transition-transform duration-700" />
-                ) : (
-                  <Folder className="w-16 h-16 text-primary opacity-30 group-hover:opacity-60 group-hover:scale-110 transition-all duration-500" />
+                {category.image && (
+                  <ImageWithFallback 
+                    src={category.image} 
+                    alt={category.name} 
+                    className="object-cover w-full h-full absolute inset-0 group-hover:scale-110 transition-transform duration-700 z-10" 
+                    fallbackType="folder"
+                    fallbackClassName="w-16 h-16 text-primary opacity-30 group-hover:opacity-60 group-hover:scale-110 transition-all duration-500 relative z-20"
+                  />
+                )}
+                {!category.image && (
+                  <Folder className="w-16 h-16 text-primary opacity-30 group-hover:opacity-60 group-hover:scale-110 transition-all duration-500 relative z-20" />
                 )}
               </div>
-              <div className="p-6 relative z-20 bg-gradient-to-b from-white/5 to-transparent border-t border-white/10 group-hover:bg-primary/20 transition-colors duration-300">
-                <h3 className="font-display font-bold text-xl text-white group-hover:text-accent transition-colors">{category.name}</h3>
-                <p className="text-sm text-muted-foreground mt-2 font-medium">{category._count.products} Products available</p>
+              <div className="p-6 relative z-20 bg-gradient-to-b from-white/5 to-transparent border-t border-white/10 group-hover:bg-primary/20 transition-colors duration-300 flex-grow flex flex-col justify-between">
+                <div>
+                  <h3 className="font-display font-bold text-xl text-white group-hover:text-accent transition-colors line-clamp-2">{category.name}</h3>
+                  <p className="text-sm text-muted-foreground mt-2 font-medium">{category._count.products} Products available</p>
+                </div>
               </div>
             </Link>
           ))}

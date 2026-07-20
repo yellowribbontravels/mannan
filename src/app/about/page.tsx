@@ -8,7 +8,7 @@ export default function About() {
             Our Story
           </div>
           <h1 className="text-5xl md:text-7xl font-display font-extrabold tracking-tight mb-8 text-white">
-            About M. Mannan <span className="text-gradient">& Co.</span>
+            About M Mannan <span className="text-gradient">Pvt Ltd</span>
           </h1>
           <p className="text-lg md:text-2xl text-muted-foreground max-w-4xl mx-auto leading-relaxed">
             A disciplined trading foundation built for scalability, early-stage investor alignment, and a strategic shift towards manufacturing excellence.

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Menu, X, Wrench } from "lucide-react";
+import { Menu, X } from "lucide-react";
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -19,10 +19,13 @@ export function Navbar() {
     <nav className="glass-nav sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-20 items-center">
-          <div className="flex items-center gap-2">
-            <Wrench className="h-8 w-8 text-accent drop-shadow-md" />
-            <Link href="/" className="text-2xl font-display font-bold tracking-tight text-white drop-shadow-sm">
-              M. Mannan <span className="text-gradient">& Co.</span>
+          <div className="flex items-center gap-3">
+            <Link href="/" className="flex items-center gap-3">
+              {/* Ensure you save the provided logo as public/logo.png */}
+              <img src="/logo.webp" alt="M Mannan Pvt Ltd Logo" className="h-12 w-auto object-contain" />
+              <span className="text-2xl font-display font-bold tracking-tight text-white drop-shadow-sm hidden sm:inline-block">
+                M Mannan <span className="text-gradient">Pvt Ltd</span>
+              </span>
             </Link>
           </div>
 
